@@ -18,34 +18,34 @@ public class GameRecordServiceImpl implements GameRecordService{
     @Override
     public GameRecordDTO createGameRecord(GameRecordDTO gameRecordDTO) {
         GameRecord gameRecord = new GameRecord();
-        gameRecord.setPlayerName(gameRecordDTO.getPlayerName());
+        gameRecord.setUsername(gameRecordDTO.getUsername());
         gameRecord.setScore(gameRecordDTO.getScore());
-        gameRecord.setGameDate(gameRecordDTO.getGameDate());
+        gameRecord.setDate(gameRecordDTO.getDate());
         gameRecord = gameRecordRepository.save(gameRecord);
-        return new GameRecordDTO(gameRecord.getId(), gameRecord.getPlayerName(), gameRecord.getScore(), gameRecord.getGameDate());
+        return new GameRecordDTO(gameRecord.getId(), gameRecord.getUsername(), gameRecord.getScore(), gameRecord.getDate());
     }
 
     @Override
     public GameRecordDTO getGameRecordById(Long id) {
         GameRecord gameRecord = gameRecordRepository.findById(id).orElseThrow(() -> new RuntimeException("GameRecord not found"));
-        return new GameRecordDTO(gameRecord.getId(), gameRecord.getPlayerName(), gameRecord.getScore(), gameRecord.getGameDate());
+        return new GameRecordDTO(gameRecord.getId(), gameRecord.getUsername(), gameRecord.getScore(), gameRecord.getDate());
     }
 
     @Override
     public List<GameRecordDTO> getAllGameRecords() {
         return gameRecordRepository.findAll().stream()
-                .map(gameRecord -> new GameRecordDTO(gameRecord.getId(), gameRecord.getPlayerName(), gameRecord.getScore(), gameRecord.getGameDate()))
+                .map(gameRecord -> new GameRecordDTO(gameRecord.getId(), gameRecord.getUsername(), gameRecord.getScore(), gameRecord.getDate()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public GameRecordDTO updateGameRecord(Long id, GameRecordDTO gameRecordDTO) {
         GameRecord gameRecord = gameRecordRepository.findById(id).orElseThrow(() -> new RuntimeException("GameRecord not found"));
-        gameRecord.setPlayerName(gameRecordDTO.getPlayerName());
+        gameRecord.setUsername(gameRecordDTO.getUsername());
         gameRecord.setScore(gameRecordDTO.getScore());
-        gameRecord.setGameDate(gameRecordDTO.getGameDate());
+        gameRecord.setDate(gameRecordDTO.getDate());
         gameRecord = gameRecordRepository.save(gameRecord);
-        return new GameRecordDTO(gameRecord.getId(), gameRecord.getPlayerName(), gameRecord.getScore(), gameRecord.getGameDate());
+        return new GameRecordDTO(gameRecord.getId(), gameRecord.getUsername(), gameRecord.getScore(), gameRecord.getDate());
     }
 
     @Override

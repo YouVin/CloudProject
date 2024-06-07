@@ -1,13 +1,21 @@
 package com.example.backend.dto;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.example.backend.entity.GameRecord;
+import lombok.*;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter @Setter @ToString
 public class GameRecordDTO {
     private Long id;
-    private String playerName;
+    private String username;
     private int score;
-    private String gameDate;
+    private String date;
+
+    public GameRecordDTO(GameRecord GameRecord) {
+        id = GameRecord.getId();
+        username = GameRecord.getUsername();
+        score = GameRecord.getScore();
+        date = GameRecord.getDate();
+    }
 }
