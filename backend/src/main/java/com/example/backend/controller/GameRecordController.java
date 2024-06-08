@@ -10,32 +10,30 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping("/score")
 public class GameRecordController {
 
     @Autowired
     private GameRecordService gameRecordService;
 
-    @RequestMapping("/score")
-    public List<GameRecordDTO> createGameRecord(){
+    @PostMapping
+    public ResponseEntity<GameRecordDTO> createGameRecord(@RequestBody GameRecordDTO gameRecordDTO) {
+        return ResponseEntity.ok(gameRecordService.createGameRecord(gameRecordDTO));
+    }
+    @GetMapping
+    public List<GameRecordDTO> getAllGameRecords() {
         return gameRecordService.getAllGameRecords();
     }
-//    @GetMapping("/{id}")
-//    public ResponseEntity<GameRecordDTO> getGameRecordById(@PathVariable Long id) {
-//        return ResponseEntity.ok(gameRecordService.getGameRecordById(id));
-//    }
-//    @GetMapping
-//    public ResponseEntity<List<GameRecordDTO>> getAllGameRecords() {
-//        return ResponseEntity.ok(gameRecordService.getAllGameRecords());
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<GameRecordDTO> updateGameRecord(@PathVariable Long id, @RequestBody GameRecordDTO gameRecordDTO) {
-//        return ResponseEntity.ok(gameRecordService.updateGameRecord(id, gameRecordDTO));
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteGameRecord(@PathVariable Long id) {
-//        gameRecordService.deleteGameRecord(id);
-//        return ResponseEntity.noContent().build();
-//    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<GameRecordDTO> updateGameRecordUsername(
+            @PathVariable Long id,
+            @RequestBody GameRecordDTO gameRecordDTO) {
+        return ResponseEntity.ok(gameRecordService.updateGameRecordUsername(id, gameRecordDTO));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteGameRecord(@PathVariable Long id) {
+        gameRecordService.deleteGameRecord(id);
+    }
 }

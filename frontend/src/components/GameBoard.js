@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import Card from "./Card";
-import { useNavigate } from "react-router-dom";
+import { useScore } from "../contexts/ScoreContext";
 
 const cardImages = [
   "elephant.png",
@@ -14,10 +14,12 @@ const cardImages = [
   "rhinoceros.png",
 ];
 
-const GameBoard = ({ setCurrentScore, handleGameEnd }) => {
+const GameBoard = ({ handleGameEnd }) => {
+  const { currentScore, setCurrentScore } = useScore();
   const [cards, setCards] = useState([]);
   const [flippedCards, setFlippedCards] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
+  const [combo, setCombo] = useState(1);
 
   useEffect(() => {
     const shuffledCards = [...cardImages, ...cardImages]
@@ -39,54 +41,78 @@ const GameBoard = ({ setCurrentScore, handleGameEnd }) => {
 
   useEffect(() => {
     if (matchedCards.length === cardImages.length * 2) {
-      // When the game ends, calculate the score and trigger handleGameEnd
       handleGameEnd();
     }
   }, [matchedCards, handleGameEnd]);
 
-  const handleCardClick = (id) => {
-    if (flippedCards.length === 2 || matchedCards.includes(id)) return;
+  useEffect(() => {
+    let comboTimer; // Combo reset timer
 
-    const newCards = cards.map((card) =>
-      card.id === id ? { ...card, isFlipped: true } : card
-    );
-    setCards(newCards);
-    setFlippedCards([...flippedCards, id]);
-
-    if (flippedCards.length === 1) {
-      const firstCard = cards.find((card) => card.id === flippedCards[0]);
-      const secondCard = cards.find((card) => card.id === id);
+    if (flippedCards.length === 2) {
+      const [first, second] = flippedCards;
+      const firstCard = cards[first];
+      const secondCard = cards[second];
 
       if (firstCard.image === secondCard.image) {
-        setMatchedCards([...matchedCards, firstCard.id, secondCard.id]);
+        // Correct match
+        setMatchedCards((prev) => [...prev, first, second]);
         setFlippedCards([]);
+        setCurrentScore((prev) => prev + 10 * Math.pow(2, combo - 1)); // Updated line
+        setCombo((prev) => prev + 1); // Increase combo by 1
       } else {
+        // Incorrect match
+        setCurrentScore((prev) => prev - 5 * combo); // Subtract combo times 5
+        setCombo(1); // Reset combo multiplier
+
+        // Flip back unmatched cards after delay
         setTimeout(() => {
-          setCards(
-            cards.map((card) =>
-              card.id === firstCard.id || card.id === secondCard.id
+          setCards((prevCards) =>
+            prevCards.map((card, index) =>
+              index === first || index === second
                 ? { ...card, isFlipped: false }
                 : card
             )
           );
           setFlippedCards([]);
-        }, 1000);
+        }, 500);
       }
+    } else {
+      // Reset combo when not flipping cards
+      setCombo(1);
+    }
+
+    return () => clearTimeout(comboTimer); // Cleanup the timer
+  }, [flippedCards, cards, combo, setCurrentScore]);
+
+  const handleCardClick = (index) => {
+    if (
+      flippedCards.length < 2 &&
+      !flippedCards.includes(index) &&
+      !matchedCards.includes(index)
+    ) {
+      setFlippedCards((prev) => [...prev, index]);
+      setCards((prevCards) =>
+        prevCards.map((card, i) =>
+          i === index ? { ...card, isFlipped: !card.isFlipped } : card
+        )
+      );
     }
   };
 
   return (
-    <Grid container spacing={1} justifyContent="center">
-      {cards.map((card) => (
-        <Grid item xs={3} key={card.id}>
-          <Card
-            image={card.image}
-            isFlipped={card.isFlipped || matchedCards.includes(card.id)}
-            onClick={() => handleCardClick(card.id)}
-          />
-        </Grid>
-      ))}
-    </Grid>
+    <Box>
+      <Grid container spacing={2} justifyContent="center">
+        {cards.map((card, index) => (
+          <Grid item xs={3} key={index}>
+            <Card
+              image={card.image}
+              isFlipped={card.isFlipped || matchedCards.includes(index)}
+              onClick={() => handleCardClick(index)}
+            />
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 };
 
