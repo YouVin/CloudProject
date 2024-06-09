@@ -1,6 +1,5 @@
-// ScoreBoardPage.js
-
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { Container, Typography } from "@mui/material";
 import ScoreTable from "./ScoreTable";
 import axios from "axios";
@@ -9,6 +8,9 @@ const ScoreBoardPage = () => {
   const [scores, setScores] = useState([]);
   const [username, setUsername] = useState(null);
   const hasPrompted = useRef(false);
+
+  const location = useLocation();
+  const { score } = location.state || { score: 0 };
 
   useEffect(() => {
     axios
@@ -35,7 +37,7 @@ const ScoreBoardPage = () => {
     if (username) {
       const newScore = {
         username: username,
-        score: 0,
+        score: score,
         date: new Date().toISOString().slice(0, 19).replace("T", " "),
       };
       axios
@@ -51,7 +53,7 @@ const ScoreBoardPage = () => {
           console.error("Error creating new score:", error);
         });
     }
-  }, [username]);
+  }, [username, score]);
 
   const handleDelete = (id) => {
     axios

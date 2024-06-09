@@ -41,7 +41,10 @@ const GameBoard = ({ handleGameEnd }) => {
 
   useEffect(() => {
     if (matchedCards.length === cardImages.length * 2) {
-      handleGameEnd();
+      // Ensure score is updated before ending the game
+      setTimeout(() => {
+        handleGameEnd();
+      }, 100); // Delay to ensure state updates complete
     }
   }, [matchedCards, handleGameEnd]);
 
@@ -57,11 +60,19 @@ const GameBoard = ({ handleGameEnd }) => {
         // Correct match
         setMatchedCards((prev) => [...prev, first, second]);
         setFlippedCards([]);
-        setCurrentScore((prev) => prev + 10 * Math.pow(2, combo - 1)); // Updated line
+        setCurrentScore((prev) => {
+          const newScore = prev + 10 * Math.pow(2, combo - 1);
+          console.log(`Score updated: ${newScore}`);
+          return newScore;
+        }); // Updated line
         setCombo((prev) => prev + 1); // Increase combo by 1
       } else {
         // Incorrect match
-        setCurrentScore((prev) => prev - 5 * combo); // Subtract combo times 5
+        setCurrentScore((prev) => {
+          const newScore = prev - 5 * combo;
+          console.log(`Score updated: ${newScore}`);
+          return newScore;
+        }); // Subtract combo times 5
         setCombo(1); // Reset combo multiplier
 
         // Flip back unmatched cards after delay

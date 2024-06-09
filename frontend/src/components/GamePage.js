@@ -10,7 +10,9 @@ const GamePage = ({ setScores }) => {
   const navigate = useNavigate();
 
   const handleGameEnd = () => {
-    navigate("/scoreboard");
+    setTimeout(() => {
+      navigate("/scoreboard", { state: { score: currentScore } });
+    }, 100); // 약간의 지연을 추가하여 점수가 업데이트될 시간을 확보
   };
 
   return (
