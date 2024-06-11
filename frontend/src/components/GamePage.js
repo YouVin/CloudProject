@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Container, Typography } from "@mui/material";
 import GameBoard from "./GameBoard";
 import { useNavigate } from "react-router-dom";
