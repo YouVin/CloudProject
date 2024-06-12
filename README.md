@@ -27,4 +27,4 @@ database - mysql
 
 / url
 frontend url - https://ybcardfront.run.goorm.io
-backend url - https://ybcardback.run.goorm.io
+backend url - https://ybcardback.run.goorm.io 
