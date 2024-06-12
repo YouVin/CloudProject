@@ -15,6 +15,9 @@ u -> 게임 기록 이름 변경
 d -> 게임 기록 삭제
 
 / 역할
+김회연 - frontend 
+황유빈 - backend / database
+김민지 - server
 
 / 개발 환경
 front - React
